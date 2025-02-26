@@ -9,7 +9,7 @@ import { Skeleton } from "./ui/skeleton";
 
 // export type StartupTypeCard = Omit<Startup, "author"> & { author?: Author };
 
-const StartupCard = ({ post }: { post: any}) => {
+export const StartupCard = ({ post }: { post: any}) => {
   const {
     _createdAt,
     views,
