@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import SearchForm from "@/components/SearchForm";
 import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
-import SearchForm from "../../components/SearchForm";
-// import { client } from "@/sanity/lib/client";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { auth } from "@/auth";
@@ -18,7 +17,26 @@ export default async function Home({
 
   console.log(session?.id);
 
-  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+  // const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+
+  const { data: rawPosts } = await sanityFetch({ query: STARTUPS_QUERY, params });
+
+const posts: StartupTypeCard[] = rawPosts.map((post: any) => ({
+  _id: post._id,
+  title: post.title || null,
+  _createdAt: post._createdAt,
+  views: post.views || null,
+  description: post.description || null,
+  category: post.category || null,
+  image: post.image || null,
+  author: post.author
+    ? {
+        _id: post.author._id,
+        name: post.author.name,
+        image: post.author.image,
+      }
+    : undefined,
+}));
 
   return (
     <>

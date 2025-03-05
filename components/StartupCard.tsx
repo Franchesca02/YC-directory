@@ -1,13 +1,41 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { cn, formatDate } from "@/lib/utils";
-import { EyeIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { Author, Startup } from "@/sanity/type";
-import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
+// import { cn, formatDate } from "@/lib/utils";
+// import { EyeIcon } from "lucide-react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { Button } from "@/components/ui/button";
+// import { Author, Startup } from "@/sanity/type";
+// import { Skeleton } from "@/components/ui/skeleton";
 
-export type StartupTypeCard = Omit<Startup, "author"> & { author?: Author };
+// import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+// import { EyeIcon } from '@heroicons/react/24/solid';
+import { formatDate } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EyeIcon } from 'lucide-react';
+
+export type Author = {
+  _id: string;
+  name: string;
+  image: string;
+};
+
+export type Startup = {
+  _id: string;
+  title: string | null;
+  _createdAt: string;
+  views: number | null;
+  description: string | null;
+  category: string | null;
+  image: string | null;
+  author: Author | null;
+};
+
+export type StartupTypeCard = Omit<Startup, 'author'> & { author?: Author };
+
+
 
 const StartupCard = ({ post }: { post: StartupTypeCard }) => {
   const {
@@ -33,34 +61,39 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
 
       <div className="flex-between mt-5 gap-5">
         <div className="flex-1">
-          <Link href={`/user/${author?._id}`}>
-            <p className="text-16-medium line-clamp-1">{author?.name}</p>
-          </Link>
+          {author && (
+            <Link href={`/user/${author._id}`}>
+              <p className="text-16-medium line-clamp-1">{author.name}</p>
+            </Link>
+          )}
           <Link href={`/startup/${_id}`}>
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
           </Link>
         </div>
-        <Link href={`/user/${author?._id}`}>
-          <Image
-            src={author?.image!}
-            alt={author?.name!}
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
-        </Link>
+        {author && (
+          <Link href={`/user/${author._id}`}>
+            <Image
+              src={author.image}
+              alt={author.name}
+              width={48}
+              height={48}
+              className="rounded-full"
+            />
+          </Link>
+        )}
       </div>
 
       <Link href={`/startup/${_id}`}>
         <p className="startup-card_desc">{description}</p>
-
-        <img src={image} alt="placeholder" className="startup-card_img" />
+        {image && <img src={image} alt="placeholder" className="startup-card_img" />}
       </Link>
 
       <div className="flex-between gap-3 mt-5">
-        <Link href={`/?query=${category?.toLowerCase()}`}>
-          <p className="text-16-medium">{category}</p>
-        </Link>
+        {category && (
+          <Link href={`/?query=${category.toLowerCase()}`}>
+            <p className="text-16-medium">{category}</p>
+          </Link>
+        )}
         <Button className="startup-card_btn" asChild>
           <Link href={`/startup/${_id}`}>Details</Link>
         </Button>
@@ -72,7 +105,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
 export const StartupCardSkeleton = () => (
   <>
     {[0, 1, 2, 3, 4].map((index: number) => (
-      <li key={cn("skeleton", index)}>
+      <li key={`skeleton-${index}`}>
         <Skeleton className="startup-card_skeleton" />
       </li>
     ))}
